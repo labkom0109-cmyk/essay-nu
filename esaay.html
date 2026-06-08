@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Lembar Kerja Esai Aswaja & Ke-NU-an</title>
+    <style>
+        :root {
+            --bg-color: #f3f3f3;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-color: #202020;
+            --accent-color: #107c41; /* Menggunakan aksen hijau khas NU */
+            --accent-hover: #0b592e;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --key-bg: rgba(16, 124, 65, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, rgba(16, 124, 65, 0.05), transparent);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 32px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #111;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #616161;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .essay-item {
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .essay-item:last-child {
+            border-bottom: none;
+        }
+
+        .essay-question {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .essay-textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        .essay-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: #ffffff;
+            box-shadow: 0 0 0 2px rgba(16, 124, 65, 0.2);
+        }
+
+        .toggle-key-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 0;
+            margin-top: 8px;
+            display: inline-block;
+            transition: color 0.2s;
+        }
+
+        .toggle-key-btn:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        .essay-key {
+            display: none;
+            margin-top: 10px;
+            padding: 14px;
+            background: var(--key-bg);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 4px 4px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2b2b2b;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            .essay-question {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>Lembar Kerja Ujian Esai (Essay)</h1>
+        <p class="subtitle">Materi Kisi-Kisi Ke-NU-an dan Aswaja — 10 Soal Analisis</p>
+        
+        <div id="essay-app-container"></div>
+        
+        <div class="action-bar">
+            <button class="btn btn-secondary" onclick="resetJawaban()">Bersihkan Jawaban</button>
+            <button class="btn btn-primary" onclick="simpanJawaban()">Simpan ke Browser</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const essayData = [
+    {
+        q: "Jelaskan secara runtut hierarki struktur kepengurusan Nahdlatul Ulama dari tingkat pusat yang paling tinggi hingga tingkatan paling bawah yang berbasis di lingkungan komunitas/dusun!",
+        k: "PBNU (Pengurus Besar - Tingkat Pusat) -> PWNU (Pengurus Wilayah - Tingkat Provinsi) -> PCNU (Pengurus Cabang - Tingkat Kabupaten/Kota) -> MWCNU (Pengurus Majelis Wakil Cabang - Tingkat Kecamatan) -> PRNU (Pengurus Ranting - Tingkat Desa/Kelurahan) -> PARNU (Pengurus Anak Ranting - Tingkat Dusun/Kelompok Pemukiman/Masjid)."
+    },
+    {
+        q: "Dalam kepengurusan NU, terdapat komponen yang disebut Syuriyah dan Tanfidziyah. Analisis perbedaan peran, fungsi, serta wewenang dari kedua badan kepengurusan tersebut dalam menjalankan roda organisasi!",
+        k: "Syuriyah adalah dewan kepengurusan tertinggi yang bertindak sebagai pengarah, pembina, penentu kebijakan, sekaligus pengawas organisasi (Legislatif). Sedangkan Tanfidziyah adalah pengurus pelaksana harian yang bertugas mengeksekusi, mengimplementasikan, dan menjalankan program kerja operasional di bawah arahan Syuriyah (Eksekutif)."
+    },
+    {
+        q: "Badan Otonom (Banom) merupakan perangkat organisasi NU yang berbasis keanggotaan dengan kekhasan tertentu. Sebutkan dan jelaskan fungsi dari 3 (tiga) Banom NU yang dikhususkan untuk wadah pembinaan generasi muda atau pelajar!",
+        k: "1. IPNU (Ikatan Pelajar Nahdlatul Ulama): Wadah kaderisasi khusus pelajar, santri, dan pemuda putra NU. 2. IPPNU (Ikatan Pelajar Putri Nahdlatul Ulama): Wadah kaderisasi khusus pelajar, santri, dan mahasiswi putri NU. 3. GP Ansor (Gerakan Pemuda Ansor): Wadah gerakan kepemudaan kemasyarakatan bagi pemuda NU usia dewasa."
+    },
+    {
+        q: "Jika sebuah Cabang NU ingin mengembangkan program kerja yang berfokus pada peningkatan mutu madrasah, pengelolaan pondok pesantren, dan optimalisasi pengumpulan zakat warga, lembaga-lembaga NU apa saja yang harus digerakkan? Sebutkan nama lembaganya beserta tugas spesifiknya!",
+        k: "- LP Ma'arif NU: Bertugas mengelola jaringan lembaga pendidikan formal (sekolah/madrasah). - RMI NU (Rabithah Ma'ahid al-Islamiyah): Bertugas mengoordinasikan dan mengembangkan pondok pesantren. - LAZISNU: Lembaga Amil Zakat, Infak, dan Sedekah NU yang bertugas menghimpun dan mendistribusikan dana umat."
+    },
+    {
+        q: "Pondok pesantren tradisional memiliki pilar-pilar utama yang membentuk ekosistemnya. Sebutkan 5 (lima) unsur pokok pesantren dan jelaskan mengapa komponen Masjid dan Kitab Kuning memegang peranan krusial di dalamnya!",
+        k: "5 Unsur pokok: Kiai, Santri, Pondok (Asrama), Masjid, dan Kitab Kuning. Masjid memegang peran krusial sebagai episentrum ibadah ritus spiritual sekaligus ruang pengajaran tatap muka langsung kiai-santri. Kitab Kuning krusial sebagai materi inti literatur keilmuan Islam klasik baku yang menjaga transmisi sanad (mata rantai) keilmuan Aswaja agar tidak terputus."
+    },
+    {
+        q: "Secara sosiologis dan budaya, kehidupan di pesantren menanamkan tata nilai yang unik, salah satunya adalah konsep pencarian barakah (keberkahan ilmu). Bagaimana implementasi sikap seorang santri terhadap kiai dalam mewujudkan nilai tersebut di kehidupan sehari-hari!",
+        k: "Implementasinya dilakukan melalui sikap takzim (hormat setinggi-tingginya), patuh pada dawuh (nasihat/perintah kebaikan) kiai dengan prinsip 'sami'na wa atha'na', berkhidmah (mengabdi) tanpa pamrih materi, serta menjaga etika sopan santun yang ketat baik secara verbal maupun perilaku di depan kiai agar mendapatkan keridhaan."
+    },
+    {
+        q: "Bagaimanakah kedudukan hukum menambahkan lafadz 'Sayyidina' sebelum menyebut nama Nabi Muhammad SAW di luar shalat maupun di dalam shalat menurut pandangan mayoritas ulama Syafi'iyyah? Jelaskan argumen dasarnya!",
+        k: "Hukumnya adalah Sunnah (Afdhal/lebih utama). Argumen dasarnya bersandar pada konsep memprioritaskan penerapan adab dan etika penghormatan (ta'dzim) kepada baginda Rasulullah SAW, yang dinilai derajatnya lebih tinggi daripada sekadar mematuhi redaksi perintah tekstual kaku tanpa atribut pemuliaan."
+    },
+    {
+        q: "Membaca shalawat merupakan perintah yang sangat dianjurkan. Ditinjau dari segi pelaksanaan ibadah formal, jelaskan posisi atau kedudukan membaca shalawat Nabi di dalam rukun Khutbah Jumat dan ibadah Shalat!",
+        k: "Dalam Khutbah Jumat: Membaca shalawat Nabi merupakan salah satu 'Rukun Sah Khutbah' yang harus diucapkan pada khutbah pertama dan kedua. Dalam ibadah Shalat: Membaca shalawat Nabi merupakan rukun wajib ('Rukun Qauli') yang dibaca saat posisi duduk Tahiyyat Akhir."
+    },
+    {
+        q: "Warga Nahdliyin sering kali melaksanakan dzikir secara bersama-sama dengan suara yang keras (jahr) setelah shalat fardhu. Tuliskan landasan hukum atau alasan kemanfaatan dari metode pelaksanaan dzikir secara jahr dan berjamaah tersebut!",
+        k: "Hukumnya diperbolehkan dan bernilai kesunahan. Kemanfaatannya meliputi fungsi syiar Islam, fungsi edukatif untuk mengajari jemaah/makmum awam yang belum hafal tuntunan dzikir, serta secara psikologis menguatkan kebersamaan spiritual dan kekhusyukan kolektif."
+    },
+    {
+        q: "Ditinjau dari cara pelaksanaannya, dzikir dapat dibagi menjadi dzikir jahr dan dzikir sirri. Jelaskan pengertian dari kedua jenis dzikir tersebut, serta kemukakan pandangan ulama Aswaja mengenai kebolehan menggunakan alat bantu butiran tasbih (subhah) saat berdzikir!",
+        k: "Dzikir Jahr: Dzikir yang dilafalkan secara lisan dengan mengeraskan suara. Dzikir Sirri: Dzikir di dalam hati (khafi) secara senyap. Mengenai tasbih (subhah): Ulama Aswaja menilai hukumnya boleh (mubah/baik) sebagai wasilah atau media bantu berhitung numerik agar fokus jatah target amalan harian terjaga secara konsisten, bukan termasuk bid'ah yang dilarang."
+    }
+];
+
+function renderEssayApp() {
+    const container = document.getElementById('essay-app-container');
+    container.innerHTML = '';
+    
+    essayData.forEach((item, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'essay-item';
+        
+        // Load saved answer if exists in local storage
+        const savedAnswer = localStorage.getItem(`essay_ans_${index}`) || '';
+        
+        itemDiv.innerHTML = `
+            <div class="essay-question">Soal ${index + 1}. ${item.q}</div>
+            <textarea class="essay-textarea" id="essay-txt-${index}" placeholder="Ketik lembar jawaban Anda di sini..." oninput="autoSave(${index})">${savedAnswer}</textarea>
+            <div>
+                <button class="toggle-key-btn" onclick="toggleKey(${index})">Tampilkan/Sembunyikan Kunci Jawaban Resmi</button>
+                <div class="essay-key" id="essay-key-${index}"><strong>Kunci Jawaban/Pedoman Penskoran:</strong><br>${item.k}</div>
+            </div>
+        `;
+        container.appendChild(itemDiv);
+    });
+}
+
+function toggleKey(idx) {
+    const keyDiv = document.getElementById(`essay-key-${idx}`);
+    if (keyDiv.style.display === 'block') {
+        keyDiv.style.display = 'none';
+    } else {
+        keyDiv.style.display = 'block';
+    }
+}
+
+function autoSave(idx) {
+    const textVal = document.getElementById(`essay-txt-${idx}`).value;
+    localStorage.setItem(`essay_ans_${idx}`, textVal);
+}
+
+function simpanJawaban() {
+    essayData.forEach((_, index) => {
+        const textVal = document.getElementById(`essay-txt-${index}`).value;
+        localStorage.setItem(`essay_ans_${index}`, textVal);
+    });
+    alert('Sukses! Semua lembar jawaban esai Anda berhasil disimpan dengan aman di browser.');
+}
+
+function resetJawaban() {
+    if (confirm('Apakah Anda yakin ingin menghapus seluruh jawaban esai yang telah ditulis?')) {
+        essayData.forEach((_, index) => {
+            document.getElementById(`essay-txt-${index}`).value = '';
+            localStorage.removeItem(`essay_ans_${index}`);
+        });
+        alert('Semua lembar jawaban telah dibersihkan.');
+    }
+}
+
+// Jalankan aplikasi pertama kali
+renderEssayApp();
+</script>
+
+</body>
+</html>
